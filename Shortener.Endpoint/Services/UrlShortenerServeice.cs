@@ -1,4 +1,5 @@
 ﻿using Shortener.Endpoint.Entities;
+using Shortener.Endpoint.Extensions;
 using Shortener.Endpoint.Infrastructure.Repositories;
 using System.Text;
 
@@ -6,6 +7,7 @@ namespace Shortener.Endpoint.Services
 {
     public class UrlShortenerServeice : IUrlShortenerServeice
     {
+        private const int TokenLength = 10;
         private readonly IShortLinkRepository _repository;
 
         public UrlShortenerServeice(IShortLinkRepository repository)
@@ -16,6 +18,8 @@ namespace Shortener.Endpoint.Services
 
         public async Task<string> CreateShortLinkAsync(string url)
         {
+
+            if (!url.IsValidUrl()) return "url is not valid";
             var existedShortLink = _repository.GetShortLinkByUrl(url);
             if (existedShortLink != null)
             {
@@ -58,22 +62,12 @@ namespace Shortener.Endpoint.Services
 
         private string GetUniqueRandomString()
         {
-            var token = GetRandomString(10);
+            var token = RandomGenerator.GetRandomString(TokenLength);
             if (_repository.IsExistToken(token)) return GetUniqueRandomString();
             return token;
         }
 
 
-        public static string GetRandomString(int stringLength)
-        {
-            StringBuilder sb = new StringBuilder();
-            int numGuidsToConcat = (((stringLength - 1) / 32) + 1);
-            for (int i = 1; i <= numGuidsToConcat; i++)
-            {
-                sb.Append(Guid.NewGuid().ToString("N"));
-            }
-
-            return sb.ToString(0, stringLength);
-        }
+        
     }
 }
