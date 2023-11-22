@@ -4,9 +4,9 @@ using Shortener.Endpoint.Services;
 namespace Shortener.Endpoint.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("")]
     public class UrlShortenerController : ControllerBase
-    {       
+    {
 
         private readonly ILogger<UrlShortenerController> _logger;
         private readonly IUrlShortenerServeice _shortenerServeice;
@@ -25,7 +25,7 @@ namespace Shortener.Endpoint.Controllers
         }
 
 
-        [HttpGet]
+        [HttpGet("/{token}")]
         public RedirectResult Redirect(string token)
         {
             var url = _shortenerServeice.GetMainUrl(token);
