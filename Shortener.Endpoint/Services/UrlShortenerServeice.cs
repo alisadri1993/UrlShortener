@@ -10,10 +10,12 @@ namespace Shortener.Endpoint.Services
     {
         private const int TokenLength = 10;
         private readonly IShortLinkRepository _repository;
+        private readonly IServiceScopeFactory _serviceScope;
 
-        public UrlShortenerServeice(IShortLinkRepository repository)
+        public UrlShortenerServeice(IShortLinkRepository repository, IServiceScopeFactory serviceScope)
         {
             _repository = repository;
+            _serviceScope = serviceScope;
         }
 
 
@@ -57,12 +59,16 @@ namespace Shortener.Endpoint.Services
 
         private void AddUrlVisited(string token)
         {
-            var shortLink = _repository.GetShortLinkByToken(token);
-            if (shortLink != null)
+            Task.Factory.StartNew(() =>
             {
-                shortLink.ReadCount++;
-                _repository.UpdateShortLink(shortLink);
-            }
+                var repo = _serviceScope.CreateScope().ServiceProvider.GetRequiredService<IShortLinkRepository>();
+                var shortLink = repo.GetShortLinkByToken(token);
+                if (shortLink != null)
+                {
+                    shortLink.ReadCount++;
+                    repo.UpdateShortLink(shortLink);
+                }                
+            });
         }
 
         private string GetUniqueRandomString()
@@ -71,8 +77,6 @@ namespace Shortener.Endpoint.Services
             if (_repository.IsExistToken(token)) return GetUniqueRandomString();
             return token;
         }
-
-
         
     }
 }
