@@ -2,7 +2,6 @@
 using Shortener.Endpoint.Extensions;
 using Shortener.Endpoint.Infrastructure.Middleware;
 using Shortener.Endpoint.Infrastructure.Repositories;
-using System.Text;
 
 namespace Shortener.Endpoint.Services
 {
@@ -67,7 +66,7 @@ namespace Shortener.Endpoint.Services
                 {
                     shortLink.ReadCount++;
                     repo.UpdateShortLink(shortLink);
-                }                
+                }
             });
         }
 
@@ -77,6 +76,6 @@ namespace Shortener.Endpoint.Services
             if (_repository.IsExistToken(token)) return GetUniqueRandomString();
             return token;
         }
-        
+
     }
 }
