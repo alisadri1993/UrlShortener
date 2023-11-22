@@ -1,4 +1,5 @@
 using Shortener.Endpoint.Extensions;
+using Shortener.Endpoint.Infrastructure.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,5 +19,7 @@ if (app.Environment.IsDevelopment())
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.Run();

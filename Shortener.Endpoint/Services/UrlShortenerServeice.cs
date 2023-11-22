@@ -1,5 +1,6 @@
 ﻿using Shortener.Endpoint.Entities;
 using Shortener.Endpoint.Extensions;
+using Shortener.Endpoint.Infrastructure.Middleware;
 using Shortener.Endpoint.Infrastructure.Repositories;
 using System.Text;
 
@@ -19,7 +20,7 @@ namespace Shortener.Endpoint.Services
         public async Task<string> CreateShortLinkAsync(string url)
         {
 
-            if (!url.IsValidUrl()) return "url is not valid";
+            if (!url.IsValidUrl()) throw new ShortenerException("url is not valid");
             var existedShortLink = _repository.GetShortLinkByUrl(url);
             if (existedShortLink != null)
             {
@@ -43,7 +44,7 @@ namespace Shortener.Endpoint.Services
         public string GetMainUrl(string token)
         {
             var shortLink = _repository.GetShortLinkByToken(token);
-            if (shortLink == null) return "Token Not Found!";
+            if (shortLink == null) throw new ShortenerException("Token Not Found!");
             {
                 AddUrlVisited(shortLink.Token);
                 return shortLink.Url;
