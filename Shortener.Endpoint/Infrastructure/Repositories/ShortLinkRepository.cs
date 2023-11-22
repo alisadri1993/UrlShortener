@@ -27,5 +27,17 @@ namespace Shortener.Endpoint.Infrastructure.Repositories
         {
             return _dbContext.shortLinks.FirstOrDefault(s => s.Url == url);
         }
+
+        public bool IsExistToken(string token)
+        {
+            return _dbContext.shortLinks.Any(s => s.Token == token);
+        }
+
+
+        public void UpdateShortLink(ShortLink shortLink)
+        {
+            _dbContext.shortLinks.Update(shortLink);
+            _dbContext.SaveChanges();
+        }
     }
 }
