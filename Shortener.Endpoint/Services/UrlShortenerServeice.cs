@@ -21,6 +21,8 @@ namespace Shortener.Endpoint.Services
         {
 
             if (!url.IsValidUrl()) throw new ShortenerException("url is not valid");
+
+            //its better to use rowversion in sql server or lock here to prevent race condition
             var existedShortLink = _repository.GetShortLinkByUrl(url);
             if (existedShortLink != null)
             {
@@ -46,6 +48,8 @@ namespace Shortener.Endpoint.Services
             var shortLink = _repository.GetShortLinkByToken(token);
             if (shortLink == null) throw new ShortenerException("Token Not Found!");
             {
+                //its better to use lock here to prevent race condition
+                // and insted af sync call its better to rais event for increment visitcount
                 AddUrlVisited(shortLink.Token);
                 return shortLink.Url;
             }
