@@ -11,8 +11,12 @@ namespace Shortener.Endpoint.Extensions
         {
             services.AddScoped<IShortLinkRepository, ShortLinkRepository>();
             services.AddScoped<IUrlShortenerServeice, UrlShortenerServeice>();
+
+            /*services.AddDbContext<UrlShortenerDbContext>(options =>
+            options.UseInMemoryDatabase(databaseName: "UrlShortenerDB"));*/
+
             services.AddDbContext<UrlShortenerDbContext>(options =>
-            options.UseInMemoryDatabase(databaseName: "UrlShortenerDB"));
+            options.UseSqlServer(configuration.GetConnectionString("DatabaseConnection")));
 
 
 
